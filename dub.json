@@ -3,9 +3,22 @@
 		"Artha"
 	],
 	"copyright": "Copyright © 2021, Artha",
-	"description": "My template for D applications",
+	"description": "Bindings to libmypaint, the brush engine of MyPaint",
 	"license": "BSL",
-	"name": "dtemplate",
-	"targetType": "executable",
-	"targetPath": "build"
+	"name": "mypaint-d",
+	"targetType": "library",
+	"targetPath": "build",
+	"configurations": [
+		{
+			"name": "default"
+		},
+		{
+			"name": "generate",
+			"dflags": [
+				"-P-Ilibmypaint",
+				"-Hf=import/mypaint.d"
+			],
+			"sourceFiles": ["source/mypaint.c"]
+		}
+	]
 }
