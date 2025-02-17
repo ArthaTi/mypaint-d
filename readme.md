@@ -13,6 +13,14 @@ git submodule init
 git submodule update
 ```
 
+You will need to configure mypaint:
+
+```sh
+cd libmypaint
+./autogen.sh
+./configure
+```
+
 As soon as this step is complete, you can generate the bindings using DUB:
 
 ```

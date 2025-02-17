@@ -10,7 +10,8 @@
 	"targetPath": "build",
 	"configurations": [
 		{
-			"name": "default"
+			"name": "default",
+			"importPaths": ["import"]
 		},
 		{
 			"name": "generate",
