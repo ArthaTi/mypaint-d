@@ -11,7 +11,9 @@
 	"configurations": [
 		{
 			"name": "default",
-			"importPaths": ["import"]
+			"importPaths": ["import"],
+			"sourceFiles": ["import/mypaint.d"],
+			"libs": ["mypaint"]
 		},
 		{
 			"name": "generate",

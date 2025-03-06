@@ -1,9 +1,9 @@
 // D import file generated from 'source/mypaint.c'
 extern (C)
 {
-	alias __uint16_t = ushort;
-	alias __uint32_t = uint;
-	alias __uint64_t = ulong;
+	// alias __uint16_t = ushort;
+	// alias __uint32_t = uint;
+	// alias __uint64_t = ulong;
 	void mypaint_init();
 	alias gpointer = void*;
 	alias gchar = char;
@@ -25,7 +25,7 @@ extern (C)
 	void mypaint_rectangle_expand_to_include_point(MyPaintRectangle* r, int x, int y);
 	void mypaint_rectangle_expand_to_include_rect(MyPaintRectangle* r, MyPaintRectangle* other);
 	MyPaintRectangle* mypaint_rectangle_copy(MyPaintRectangle* self);
-	struct MyPaintSurface;
+	// struct MyPaintSurface;
 	alias MyPaintSurfaceGetColorFunction = void function(MyPaintSurface* self, float x, float y, float radius, float* color_r, float* color_g, float* color_b, float* color_a, float paint);
 	alias MyPaintSurfaceDrawDabFunction = int function(MyPaintSurface* self, float x, float y, float radius, float color_r, float color_g, float color_b, float opaque, float hardness, float softness, float alpha_eraser, float aspect_ratio, float angle, float lock_alpha, float colorize, float posterize, float posterize_num, float paint);
 	alias MyPaintSurfaceDestroyFunction = void function(MyPaintSurface* self);
@@ -330,7 +330,7 @@ extern (C)
 		float max = void;
 		const(char)* tooltip = void;
 	}
-	const MyPaintBrushSettingInfo* mypaint_brush_setting_info(MyPaintBrushSetting id);
+	const(MyPaintBrushSettingInfo)* mypaint_brush_setting_info(MyPaintBrushSetting id);
 	const(char)* mypaint_brush_setting_info_get_name(const MyPaintBrushSettingInfo* self);
 	const(char)* mypaint_brush_setting_info_get_tooltip(const MyPaintBrushSettingInfo* self);
 	MyPaintBrushSetting mypaint_brush_setting_from_cname(const(char)* cname);
@@ -345,13 +345,13 @@ extern (C)
 		const(char)* name = void;
 		const(char)* tooltip = void;
 	}
-	const MyPaintBrushInputInfo* mypaint_brush_input_info(MyPaintBrushInput id);
+	const(MyPaintBrushInputInfo)* mypaint_brush_input_info(MyPaintBrushInput id);
 	const(char)* mypaint_brush_input_info_get_name(const MyPaintBrushInputInfo* self);
 	const(char)* mypaint_brush_input_info_get_tooltip(const MyPaintBrushInputInfo* self);
 	MyPaintBrushInput mypaint_brush_input_from_cname(const(char)* cname);
 	struct MyPaintBrush;
-	const MyPaintBrush* mypaint_brush_new();
-	const MyPaintBrush* mypaint_brush_new_with_buckets(int num_smudge_buckets);
+	MyPaintBrush* mypaint_brush_new();
+	MyPaintBrush* mypaint_brush_new_with_buckets(int num_smudge_buckets);
 	void mypaint_brush_unref(const MyPaintBrush* self);
 	void mypaint_brush_ref(const MyPaintBrush* self);
 	void mypaint_brush_reset(const MyPaintBrush* self);
@@ -473,11 +473,11 @@ extern (C)
 	{
 		float[3][3] rows = void;
 	}
-	const MyPaintTransform mypaint_transform_unit();
-	const MyPaintTransform mypaint_transform_rotate_cw(const MyPaintTransform transform, const(float) angle_radians);
-	const MyPaintTransform mypaint_transform_rotate_ccw(const MyPaintTransform transform, const(float) angle_radians);
-	const MyPaintTransform mypaint_transform_reflect(const MyPaintTransform transform, const(float) angle_radians);
-	const MyPaintTransform mypaint_transform_translate(const MyPaintTransform transform, const(float) x, const(float) y);
+	MyPaintTransform mypaint_transform_unit();
+	MyPaintTransform mypaint_transform_rotate_cw(const MyPaintTransform transform, const(float) angle_radians);
+	MyPaintTransform mypaint_transform_rotate_ccw(const MyPaintTransform transform, const(float) angle_radians);
+	MyPaintTransform mypaint_transform_reflect(const MyPaintTransform transform, const(float) angle_radians);
+	MyPaintTransform mypaint_transform_translate(const MyPaintTransform transform, const(float) x, const(float) y);
 	void mypaint_transform_point(const MyPaintTransform* t, float x, float y, float* x_out, float* y_out);
 	enum MyPaintSymmetryType
 	{
@@ -515,7 +515,7 @@ extern (C)
 	MyPaintSymmetryData mypaint_default_symmetry_data();
 	void mypaint_symmetry_data_destroy(MyPaintSymmetryData*);
 	void mypaint_symmetry_set_pending(MyPaintSymmetryData* data, int active, float center_x, float center_y, float symmetry_angle, MyPaintSymmetryType symmetry_type, int rot_symmetry_lines);
-	struct MyPaintTiledSurface;
+	// struct MyPaintTiledSurface;
 	struct MyPaintTileRequest
 	{
 		int tx = void;
@@ -536,7 +536,7 @@ extern (C)
 		void function(MyPaintTiledSurface* self, MyPaintTileRequest* request) tile_request_start = void;
 		void function(MyPaintTiledSurface* self, MyPaintTileRequest* request) tile_request_end = void;
 		MyPaintSymmetryData symmetry_data = void;
-		OperationQueue* operation_queue = void;
+		void* operation_queue = void;
 		int num_bboxes = void;
 		int num_bboxes_dirtied = void;
 		MyPaintRectangle* bboxes = void;
@@ -1124,13 +1124,13 @@ extern (C)
 		return __builtin_expect(cond, 1);
 	}
 	enum int __LDOUBLE_REDIRECTS_TO_FLOAT128_ABI = 0;
-	auto __REDIRECT_LDBL(__MP79, __MP80, __MP81)(__MP79 name, __MP80 proto, __MP81 alias)
+	auto __REDIRECT_LDBL(__MP79, __MP80, __MP81)(__MP79 name, __MP80 proto, __MP81 _alias)
 	{
-		return __REDIRECT(name, proto, alias);
+		return __REDIRECT(name, proto, _alias);
 	}
-	auto __REDIRECT_NTH_LDBL(__MP82, __MP83, __MP84)(__MP82 name, __MP83 proto, __MP84 alias)
+	auto __REDIRECT_NTH_LDBL(__MP82, __MP83, __MP84)(__MP82 name, __MP83 proto, __MP84 _alias)
 	{
-		return __REDIRECT_NTH(name, proto, alias);
+		return __REDIRECT_NTH(name, proto, _alias);
 	}
 	enum int __HAVE_GENERIC_SELECTION = 1;
 	auto __fortified_attr_access(__MP88, __MP89, __MP90)(__MP88 a, __MP89 o, __MP90 s)
