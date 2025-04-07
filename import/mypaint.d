@@ -24,43 +24,57 @@ extern (C)
 	}
 	void mypaint_rectangle_expand_to_include_point(MyPaintRectangle* r, int x, int y);
 	void mypaint_rectangle_expand_to_include_rect(MyPaintRectangle* r, MyPaintRectangle* other);
-	MyPaintRectangle* mypaint_rectangle_copy(MyPaintRectangle* self);
 	// struct MyPaintSurface;
-	alias MyPaintSurfaceGetColorFunction = void function(MyPaintSurface* self, float x, float y, float radius, float* color_r, float* color_g, float* color_b, float* color_a, float paint);
-	alias MyPaintSurfaceDrawDabFunction = int function(MyPaintSurface* self, float x, float y, float radius, float color_r, float color_g, float color_b, float opaque, float hardness, float softness, float alpha_eraser, float aspect_ratio, float angle, float lock_alpha, float colorize, float posterize, float posterize_num, float paint);
+	MyPaintRectangle* mypaint_rectangle_copy(MyPaintRectangle* r);
+	alias MyPaintSurfaceGetColorFunction = void function(MyPaintSurface* self, float x, float y, float radius, float* color_r, float* color_g, float* color_b, float* color_a);
+	alias MyPaintSurfaceDrawDabFunction = int function(MyPaintSurface* self, float x, float y, float radius, float color_r, float color_g, float color_b, float opaque, float hardness, float alpha_eraser, float aspect_ratio, float angle, float lock_alpha, float colorize);
 	alias MyPaintSurfaceDestroyFunction = void function(MyPaintSurface* self);
 	alias MyPaintSurfaceSavePngFunction = void function(MyPaintSurface* self, const(char)* path, int x, int y, int width, int height);
 	alias MyPaintSurfaceBeginAtomicFunction = void function(MyPaintSurface* self);
-	alias MyPaintSurfaceEndAtomicFunction = void function(MyPaintSurface* self, MyPaintRectangles* roi);
+	alias MyPaintSurfaceEndAtomicFunction = void function(MyPaintSurface* self, MyPaintRectangle* roi);
 	struct MyPaintSurface
 	{
-		int function(MyPaintSurface* self, float x, float y, float radius, float color_r, float color_g, float color_b, float opaque, float hardness, float softness, float alpha_eraser, float aspect_ratio, float angle, float lock_alpha, float colorize, float posterize, float posterize_num, float paint) draw_dab = void;
-		void function(MyPaintSurface* self, float x, float y, float radius, float* color_r, float* color_g, float* color_b, float* color_a, float paint) get_color = void;
+		int function(MyPaintSurface* self, float x, float y, float radius, float color_r, float color_g, float color_b, float opaque, float hardness, float alpha_eraser, float aspect_ratio, float angle, float lock_alpha, float colorize) draw_dab = void;
+		void function(MyPaintSurface* self, float x, float y, float radius, float* color_r, float* color_g, float* color_b, float* color_a) get_color = void;
 		void function(MyPaintSurface* self) begin_atomic = void;
-		void function(MyPaintSurface* self, MyPaintRectangles* roi) end_atomic = void;
+		void function(MyPaintSurface* self, MyPaintRectangle* roi) end_atomic = void;
 		void function(MyPaintSurface* self) destroy = void;
 		void function(MyPaintSurface* self, const(char)* path, int x, int y, int width, int height) save_png = void;
 		int refcount = void;
 	}
-	int mypaint_surface_draw_dab(MyPaintSurface* self, float x, float y, float radius, float color_r, float color_g, float color_b, float opaque, float hardness, float softness, float alpha_eraser, float aspect_ratio, float angle, float lock_alpha, float colorize, float posterize, float posterize_num, float paint);
-	void mypaint_surface_get_color(MyPaintSurface* self, float x, float y, float radius, float* color_r, float* color_g, float* color_b, float* color_a, float paint);
+	int mypaint_surface_draw_dab(MyPaintSurface* self, float x, float y, float radius, float color_r, float color_g, float color_b, float opaque, float hardness, float alpha_eraser, float aspect_ratio, float angle, float lock_alpha, float colorize);
+	void mypaint_surface_get_color(MyPaintSurface* self, float x, float y, float radius, float* color_r, float* color_g, float* color_b, float* color_a);
 	float mypaint_surface_get_alpha(MyPaintSurface* self, float x, float y, float radius);
 	void mypaint_surface_save_png(MyPaintSurface* self, const(char)* path, int x, int y, int width, int height);
 	void mypaint_surface_begin_atomic(MyPaintSurface* self);
-	void mypaint_surface_end_atomic(MyPaintSurface* self, MyPaintRectangles* roi);
+	void mypaint_surface_end_atomic(MyPaintSurface* self, MyPaintRectangle* roi);
 	void mypaint_surface_init(MyPaintSurface* self);
 	void mypaint_surface_ref(MyPaintSurface* self);
 	void mypaint_surface_unref(MyPaintSurface* self);
+	alias MyPaintSurfaceDrawDabFunction2 = int function(MyPaintSurface2* self, float x, float y, float radius, float color_r, float color_g, float color_b, float opaque, float hardness, float alpha_eraser, float aspect_ratio, float angle, float lock_alpha, float colorize, float posterize, float posterize_num, float paint);
+	alias MyPaintSurfaceGetColorFunction2 = void function(MyPaintSurface2* self, float x, float y, float radius, float* color_r, float* color_g, float* color_b, float* color_a, float paint);
+	alias MyPaintSurfaceEndAtomicFunction2 = void function(MyPaintSurface2* self, MyPaintRectangles* roi);
+	struct MyPaintSurface2
+	{
+		MyPaintSurface parent = void;
+		int function(MyPaintSurface2* self, float x, float y, float radius, float color_r, float color_g, float color_b, float opaque, float hardness, float alpha_eraser, float aspect_ratio, float angle, float lock_alpha, float colorize, float posterize, float posterize_num, float paint) draw_dab_pigment = void;
+		void function(MyPaintSurface2* self, float x, float y, float radius, float* color_r, float* color_g, float* color_b, float* color_a, float paint) get_color_pigment = void;
+		void function(MyPaintSurface2* self, MyPaintRectangles* roi) end_atomic_multi = void;
+	}
+	MyPaintSurface* mypaint_surface2_to_surface(MyPaintSurface2* self);
+	void mypaint_surface2_get_color(MyPaintSurface2* self, float x, float y, float radius, float* color_r, float* color_g, float* color_b, float* color_a, float paint);
+	void mypaint_surface2_end_atomic(MyPaintSurface2* self, MyPaintRectangles* roi);
+	int mypaint_surface2_draw_dab(MyPaintSurface2* self, float x, float y, float radius, float color_r, float color_g, float color_b, float opaque, float hardness, float alpha_eraser, float aspect_ratio, float angle, float lock_alpha, float colorize, float posterize, float posterize_num, float paint);
 	enum MyPaintBrushInput
 	{
 		MYPAINT_BRUSH_INPUT_PRESSURE,
+		MYPAINT_BRUSH_INPUT_SPEED1,
+		MYPAINT_BRUSH_INPUT_SPEED2,
 		MYPAINT_BRUSH_INPUT_RANDOM,
 		MYPAINT_BRUSH_INPUT_STROKE,
 		MYPAINT_BRUSH_INPUT_DIRECTION,
 		MYPAINT_BRUSH_INPUT_TILT_DECLINATION,
 		MYPAINT_BRUSH_INPUT_TILT_ASCENSION,
-		MYPAINT_BRUSH_INPUT_SPEED1,
-		MYPAINT_BRUSH_INPUT_SPEED2,
 		MYPAINT_BRUSH_INPUT_CUSTOM,
 		MYPAINT_BRUSH_INPUT_DIRECTION_ANGLE,
 		MYPAINT_BRUSH_INPUT_ATTACK_ANGLE,
@@ -69,18 +83,18 @@ extern (C)
 		MYPAINT_BRUSH_INPUT_GRIDMAP_X,
 		MYPAINT_BRUSH_INPUT_GRIDMAP_Y,
 		MYPAINT_BRUSH_INPUT_VIEWZOOM,
-		MYPAINT_BRUSH_INPUT_BRUSH_RADIUS,
 		MYPAINT_BRUSH_INPUT_BARREL_ROTATION,
+		MYPAINT_BRUSH_INPUT_BRUSH_RADIUS,
 		MYPAINT_BRUSH_INPUTS_COUNT,
 	}
 	alias MYPAINT_BRUSH_INPUT_PRESSURE = MyPaintBrushInput.MYPAINT_BRUSH_INPUT_PRESSURE;
+	alias MYPAINT_BRUSH_INPUT_SPEED1 = MyPaintBrushInput.MYPAINT_BRUSH_INPUT_SPEED1;
+	alias MYPAINT_BRUSH_INPUT_SPEED2 = MyPaintBrushInput.MYPAINT_BRUSH_INPUT_SPEED2;
 	alias MYPAINT_BRUSH_INPUT_RANDOM = MyPaintBrushInput.MYPAINT_BRUSH_INPUT_RANDOM;
 	alias MYPAINT_BRUSH_INPUT_STROKE = MyPaintBrushInput.MYPAINT_BRUSH_INPUT_STROKE;
 	alias MYPAINT_BRUSH_INPUT_DIRECTION = MyPaintBrushInput.MYPAINT_BRUSH_INPUT_DIRECTION;
 	alias MYPAINT_BRUSH_INPUT_TILT_DECLINATION = MyPaintBrushInput.MYPAINT_BRUSH_INPUT_TILT_DECLINATION;
 	alias MYPAINT_BRUSH_INPUT_TILT_ASCENSION = MyPaintBrushInput.MYPAINT_BRUSH_INPUT_TILT_ASCENSION;
-	alias MYPAINT_BRUSH_INPUT_SPEED1 = MyPaintBrushInput.MYPAINT_BRUSH_INPUT_SPEED1;
-	alias MYPAINT_BRUSH_INPUT_SPEED2 = MyPaintBrushInput.MYPAINT_BRUSH_INPUT_SPEED2;
 	alias MYPAINT_BRUSH_INPUT_CUSTOM = MyPaintBrushInput.MYPAINT_BRUSH_INPUT_CUSTOM;
 	alias MYPAINT_BRUSH_INPUT_DIRECTION_ANGLE = MyPaintBrushInput.MYPAINT_BRUSH_INPUT_DIRECTION_ANGLE;
 	alias MYPAINT_BRUSH_INPUT_ATTACK_ANGLE = MyPaintBrushInput.MYPAINT_BRUSH_INPUT_ATTACK_ANGLE;
@@ -89,8 +103,8 @@ extern (C)
 	alias MYPAINT_BRUSH_INPUT_GRIDMAP_X = MyPaintBrushInput.MYPAINT_BRUSH_INPUT_GRIDMAP_X;
 	alias MYPAINT_BRUSH_INPUT_GRIDMAP_Y = MyPaintBrushInput.MYPAINT_BRUSH_INPUT_GRIDMAP_Y;
 	alias MYPAINT_BRUSH_INPUT_VIEWZOOM = MyPaintBrushInput.MYPAINT_BRUSH_INPUT_VIEWZOOM;
-	alias MYPAINT_BRUSH_INPUT_BRUSH_RADIUS = MyPaintBrushInput.MYPAINT_BRUSH_INPUT_BRUSH_RADIUS;
 	alias MYPAINT_BRUSH_INPUT_BARREL_ROTATION = MyPaintBrushInput.MYPAINT_BRUSH_INPUT_BARREL_ROTATION;
+	alias MYPAINT_BRUSH_INPUT_BRUSH_RADIUS = MyPaintBrushInput.MYPAINT_BRUSH_INPUT_BRUSH_RADIUS;
 	alias MYPAINT_BRUSH_INPUTS_COUNT = MyPaintBrushInput.MYPAINT_BRUSH_INPUTS_COUNT;
 	enum MyPaintBrushSetting
 	{
@@ -99,30 +113,16 @@ extern (C)
 		MYPAINT_BRUSH_SETTING_OPAQUE_LINEARIZE,
 		MYPAINT_BRUSH_SETTING_RADIUS_LOGARITHMIC,
 		MYPAINT_BRUSH_SETTING_HARDNESS,
-		MYPAINT_BRUSH_SETTING_SOFTNESS,
 		MYPAINT_BRUSH_SETTING_ANTI_ALIASING,
 		MYPAINT_BRUSH_SETTING_DABS_PER_BASIC_RADIUS,
 		MYPAINT_BRUSH_SETTING_DABS_PER_ACTUAL_RADIUS,
 		MYPAINT_BRUSH_SETTING_DABS_PER_SECOND,
-		MYPAINT_BRUSH_SETTING_GRIDMAP_SCALE,
-		MYPAINT_BRUSH_SETTING_GRIDMAP_SCALE_X,
-		MYPAINT_BRUSH_SETTING_GRIDMAP_SCALE_Y,
 		MYPAINT_BRUSH_SETTING_RADIUS_BY_RANDOM,
 		MYPAINT_BRUSH_SETTING_SPEED1_SLOWNESS,
 		MYPAINT_BRUSH_SETTING_SPEED2_SLOWNESS,
 		MYPAINT_BRUSH_SETTING_SPEED1_GAMMA,
 		MYPAINT_BRUSH_SETTING_SPEED2_GAMMA,
 		MYPAINT_BRUSH_SETTING_OFFSET_BY_RANDOM,
-		MYPAINT_BRUSH_SETTING_OFFSET_Y,
-		MYPAINT_BRUSH_SETTING_OFFSET_X,
-		MYPAINT_BRUSH_SETTING_OFFSET_ANGLE,
-		MYPAINT_BRUSH_SETTING_OFFSET_ANGLE_ASC,
-		MYPAINT_BRUSH_SETTING_OFFSET_ANGLE_VIEW,
-		MYPAINT_BRUSH_SETTING_OFFSET_ANGLE_2,
-		MYPAINT_BRUSH_SETTING_OFFSET_ANGLE_2_ASC,
-		MYPAINT_BRUSH_SETTING_OFFSET_ANGLE_2_VIEW,
-		MYPAINT_BRUSH_SETTING_OFFSET_ANGLE_ADJ,
-		MYPAINT_BRUSH_SETTING_OFFSET_MULTIPLIER,
 		MYPAINT_BRUSH_SETTING_OFFSET_BY_SPEED,
 		MYPAINT_BRUSH_SETTING_OFFSET_BY_SPEED_SLOWNESS,
 		MYPAINT_BRUSH_SETTING_SLOW_TRACKING,
@@ -138,11 +138,7 @@ extern (C)
 		MYPAINT_BRUSH_SETTING_CHANGE_COLOR_V,
 		MYPAINT_BRUSH_SETTING_CHANGE_COLOR_HSV_S,
 		MYPAINT_BRUSH_SETTING_SMUDGE,
-		MYPAINT_BRUSH_SETTING_PAINT_MODE,
-		MYPAINT_BRUSH_SETTING_SMUDGE_TRANSPARENCY,
 		MYPAINT_BRUSH_SETTING_SMUDGE_LENGTH,
-		MYPAINT_BRUSH_SETTING_SMUDGE_LENGTH_LOG,
-		MYPAINT_BRUSH_SETTING_SMUDGE_BUCKET,
 		MYPAINT_BRUSH_SETTING_SMUDGE_RADIUS_LOG,
 		MYPAINT_BRUSH_SETTING_ERASER,
 		MYPAINT_BRUSH_SETTING_STROKE_THRESHOLD,
@@ -155,10 +151,27 @@ extern (C)
 		MYPAINT_BRUSH_SETTING_DIRECTION_FILTER,
 		MYPAINT_BRUSH_SETTING_LOCK_ALPHA,
 		MYPAINT_BRUSH_SETTING_COLORIZE,
-		MYPAINT_BRUSH_SETTING_POSTERIZE,
-		MYPAINT_BRUSH_SETTING_POSTERIZE_NUM,
 		MYPAINT_BRUSH_SETTING_SNAP_TO_PIXEL,
 		MYPAINT_BRUSH_SETTING_PRESSURE_GAIN_LOG,
+		MYPAINT_BRUSH_SETTING_GRIDMAP_SCALE,
+		MYPAINT_BRUSH_SETTING_GRIDMAP_SCALE_X,
+		MYPAINT_BRUSH_SETTING_GRIDMAP_SCALE_Y,
+		MYPAINT_BRUSH_SETTING_SMUDGE_LENGTH_LOG,
+		MYPAINT_BRUSH_SETTING_SMUDGE_BUCKET,
+		MYPAINT_BRUSH_SETTING_SMUDGE_TRANSPARENCY,
+		MYPAINT_BRUSH_SETTING_OFFSET_Y,
+		MYPAINT_BRUSH_SETTING_OFFSET_X,
+		MYPAINT_BRUSH_SETTING_OFFSET_ANGLE,
+		MYPAINT_BRUSH_SETTING_OFFSET_ANGLE_ASC,
+		MYPAINT_BRUSH_SETTING_OFFSET_ANGLE_VIEW,
+		MYPAINT_BRUSH_SETTING_OFFSET_ANGLE_2,
+		MYPAINT_BRUSH_SETTING_OFFSET_ANGLE_2_ASC,
+		MYPAINT_BRUSH_SETTING_OFFSET_ANGLE_2_VIEW,
+		MYPAINT_BRUSH_SETTING_OFFSET_ANGLE_ADJ,
+		MYPAINT_BRUSH_SETTING_OFFSET_MULTIPLIER,
+		MYPAINT_BRUSH_SETTING_POSTERIZE,
+		MYPAINT_BRUSH_SETTING_POSTERIZE_NUM,
+		MYPAINT_BRUSH_SETTING_PAINT_MODE,
 		MYPAINT_BRUSH_SETTINGS_COUNT,
 	}
 	alias MYPAINT_BRUSH_SETTING_OPAQUE = MyPaintBrushSetting.MYPAINT_BRUSH_SETTING_OPAQUE;
@@ -166,30 +179,16 @@ extern (C)
 	alias MYPAINT_BRUSH_SETTING_OPAQUE_LINEARIZE = MyPaintBrushSetting.MYPAINT_BRUSH_SETTING_OPAQUE_LINEARIZE;
 	alias MYPAINT_BRUSH_SETTING_RADIUS_LOGARITHMIC = MyPaintBrushSetting.MYPAINT_BRUSH_SETTING_RADIUS_LOGARITHMIC;
 	alias MYPAINT_BRUSH_SETTING_HARDNESS = MyPaintBrushSetting.MYPAINT_BRUSH_SETTING_HARDNESS;
-	alias MYPAINT_BRUSH_SETTING_SOFTNESS = MyPaintBrushSetting.MYPAINT_BRUSH_SETTING_SOFTNESS;
 	alias MYPAINT_BRUSH_SETTING_ANTI_ALIASING = MyPaintBrushSetting.MYPAINT_BRUSH_SETTING_ANTI_ALIASING;
 	alias MYPAINT_BRUSH_SETTING_DABS_PER_BASIC_RADIUS = MyPaintBrushSetting.MYPAINT_BRUSH_SETTING_DABS_PER_BASIC_RADIUS;
 	alias MYPAINT_BRUSH_SETTING_DABS_PER_ACTUAL_RADIUS = MyPaintBrushSetting.MYPAINT_BRUSH_SETTING_DABS_PER_ACTUAL_RADIUS;
 	alias MYPAINT_BRUSH_SETTING_DABS_PER_SECOND = MyPaintBrushSetting.MYPAINT_BRUSH_SETTING_DABS_PER_SECOND;
-	alias MYPAINT_BRUSH_SETTING_GRIDMAP_SCALE = MyPaintBrushSetting.MYPAINT_BRUSH_SETTING_GRIDMAP_SCALE;
-	alias MYPAINT_BRUSH_SETTING_GRIDMAP_SCALE_X = MyPaintBrushSetting.MYPAINT_BRUSH_SETTING_GRIDMAP_SCALE_X;
-	alias MYPAINT_BRUSH_SETTING_GRIDMAP_SCALE_Y = MyPaintBrushSetting.MYPAINT_BRUSH_SETTING_GRIDMAP_SCALE_Y;
 	alias MYPAINT_BRUSH_SETTING_RADIUS_BY_RANDOM = MyPaintBrushSetting.MYPAINT_BRUSH_SETTING_RADIUS_BY_RANDOM;
 	alias MYPAINT_BRUSH_SETTING_SPEED1_SLOWNESS = MyPaintBrushSetting.MYPAINT_BRUSH_SETTING_SPEED1_SLOWNESS;
 	alias MYPAINT_BRUSH_SETTING_SPEED2_SLOWNESS = MyPaintBrushSetting.MYPAINT_BRUSH_SETTING_SPEED2_SLOWNESS;
 	alias MYPAINT_BRUSH_SETTING_SPEED1_GAMMA = MyPaintBrushSetting.MYPAINT_BRUSH_SETTING_SPEED1_GAMMA;
 	alias MYPAINT_BRUSH_SETTING_SPEED2_GAMMA = MyPaintBrushSetting.MYPAINT_BRUSH_SETTING_SPEED2_GAMMA;
 	alias MYPAINT_BRUSH_SETTING_OFFSET_BY_RANDOM = MyPaintBrushSetting.MYPAINT_BRUSH_SETTING_OFFSET_BY_RANDOM;
-	alias MYPAINT_BRUSH_SETTING_OFFSET_Y = MyPaintBrushSetting.MYPAINT_BRUSH_SETTING_OFFSET_Y;
-	alias MYPAINT_BRUSH_SETTING_OFFSET_X = MyPaintBrushSetting.MYPAINT_BRUSH_SETTING_OFFSET_X;
-	alias MYPAINT_BRUSH_SETTING_OFFSET_ANGLE = MyPaintBrushSetting.MYPAINT_BRUSH_SETTING_OFFSET_ANGLE;
-	alias MYPAINT_BRUSH_SETTING_OFFSET_ANGLE_ASC = MyPaintBrushSetting.MYPAINT_BRUSH_SETTING_OFFSET_ANGLE_ASC;
-	alias MYPAINT_BRUSH_SETTING_OFFSET_ANGLE_VIEW = MyPaintBrushSetting.MYPAINT_BRUSH_SETTING_OFFSET_ANGLE_VIEW;
-	alias MYPAINT_BRUSH_SETTING_OFFSET_ANGLE_2 = MyPaintBrushSetting.MYPAINT_BRUSH_SETTING_OFFSET_ANGLE_2;
-	alias MYPAINT_BRUSH_SETTING_OFFSET_ANGLE_2_ASC = MyPaintBrushSetting.MYPAINT_BRUSH_SETTING_OFFSET_ANGLE_2_ASC;
-	alias MYPAINT_BRUSH_SETTING_OFFSET_ANGLE_2_VIEW = MyPaintBrushSetting.MYPAINT_BRUSH_SETTING_OFFSET_ANGLE_2_VIEW;
-	alias MYPAINT_BRUSH_SETTING_OFFSET_ANGLE_ADJ = MyPaintBrushSetting.MYPAINT_BRUSH_SETTING_OFFSET_ANGLE_ADJ;
-	alias MYPAINT_BRUSH_SETTING_OFFSET_MULTIPLIER = MyPaintBrushSetting.MYPAINT_BRUSH_SETTING_OFFSET_MULTIPLIER;
 	alias MYPAINT_BRUSH_SETTING_OFFSET_BY_SPEED = MyPaintBrushSetting.MYPAINT_BRUSH_SETTING_OFFSET_BY_SPEED;
 	alias MYPAINT_BRUSH_SETTING_OFFSET_BY_SPEED_SLOWNESS = MyPaintBrushSetting.MYPAINT_BRUSH_SETTING_OFFSET_BY_SPEED_SLOWNESS;
 	alias MYPAINT_BRUSH_SETTING_SLOW_TRACKING = MyPaintBrushSetting.MYPAINT_BRUSH_SETTING_SLOW_TRACKING;
@@ -205,11 +204,7 @@ extern (C)
 	alias MYPAINT_BRUSH_SETTING_CHANGE_COLOR_V = MyPaintBrushSetting.MYPAINT_BRUSH_SETTING_CHANGE_COLOR_V;
 	alias MYPAINT_BRUSH_SETTING_CHANGE_COLOR_HSV_S = MyPaintBrushSetting.MYPAINT_BRUSH_SETTING_CHANGE_COLOR_HSV_S;
 	alias MYPAINT_BRUSH_SETTING_SMUDGE = MyPaintBrushSetting.MYPAINT_BRUSH_SETTING_SMUDGE;
-	alias MYPAINT_BRUSH_SETTING_PAINT_MODE = MyPaintBrushSetting.MYPAINT_BRUSH_SETTING_PAINT_MODE;
-	alias MYPAINT_BRUSH_SETTING_SMUDGE_TRANSPARENCY = MyPaintBrushSetting.MYPAINT_BRUSH_SETTING_SMUDGE_TRANSPARENCY;
 	alias MYPAINT_BRUSH_SETTING_SMUDGE_LENGTH = MyPaintBrushSetting.MYPAINT_BRUSH_SETTING_SMUDGE_LENGTH;
-	alias MYPAINT_BRUSH_SETTING_SMUDGE_LENGTH_LOG = MyPaintBrushSetting.MYPAINT_BRUSH_SETTING_SMUDGE_LENGTH_LOG;
-	alias MYPAINT_BRUSH_SETTING_SMUDGE_BUCKET = MyPaintBrushSetting.MYPAINT_BRUSH_SETTING_SMUDGE_BUCKET;
 	alias MYPAINT_BRUSH_SETTING_SMUDGE_RADIUS_LOG = MyPaintBrushSetting.MYPAINT_BRUSH_SETTING_SMUDGE_RADIUS_LOG;
 	alias MYPAINT_BRUSH_SETTING_ERASER = MyPaintBrushSetting.MYPAINT_BRUSH_SETTING_ERASER;
 	alias MYPAINT_BRUSH_SETTING_STROKE_THRESHOLD = MyPaintBrushSetting.MYPAINT_BRUSH_SETTING_STROKE_THRESHOLD;
@@ -222,10 +217,27 @@ extern (C)
 	alias MYPAINT_BRUSH_SETTING_DIRECTION_FILTER = MyPaintBrushSetting.MYPAINT_BRUSH_SETTING_DIRECTION_FILTER;
 	alias MYPAINT_BRUSH_SETTING_LOCK_ALPHA = MyPaintBrushSetting.MYPAINT_BRUSH_SETTING_LOCK_ALPHA;
 	alias MYPAINT_BRUSH_SETTING_COLORIZE = MyPaintBrushSetting.MYPAINT_BRUSH_SETTING_COLORIZE;
-	alias MYPAINT_BRUSH_SETTING_POSTERIZE = MyPaintBrushSetting.MYPAINT_BRUSH_SETTING_POSTERIZE;
-	alias MYPAINT_BRUSH_SETTING_POSTERIZE_NUM = MyPaintBrushSetting.MYPAINT_BRUSH_SETTING_POSTERIZE_NUM;
 	alias MYPAINT_BRUSH_SETTING_SNAP_TO_PIXEL = MyPaintBrushSetting.MYPAINT_BRUSH_SETTING_SNAP_TO_PIXEL;
 	alias MYPAINT_BRUSH_SETTING_PRESSURE_GAIN_LOG = MyPaintBrushSetting.MYPAINT_BRUSH_SETTING_PRESSURE_GAIN_LOG;
+	alias MYPAINT_BRUSH_SETTING_GRIDMAP_SCALE = MyPaintBrushSetting.MYPAINT_BRUSH_SETTING_GRIDMAP_SCALE;
+	alias MYPAINT_BRUSH_SETTING_GRIDMAP_SCALE_X = MyPaintBrushSetting.MYPAINT_BRUSH_SETTING_GRIDMAP_SCALE_X;
+	alias MYPAINT_BRUSH_SETTING_GRIDMAP_SCALE_Y = MyPaintBrushSetting.MYPAINT_BRUSH_SETTING_GRIDMAP_SCALE_Y;
+	alias MYPAINT_BRUSH_SETTING_SMUDGE_LENGTH_LOG = MyPaintBrushSetting.MYPAINT_BRUSH_SETTING_SMUDGE_LENGTH_LOG;
+	alias MYPAINT_BRUSH_SETTING_SMUDGE_BUCKET = MyPaintBrushSetting.MYPAINT_BRUSH_SETTING_SMUDGE_BUCKET;
+	alias MYPAINT_BRUSH_SETTING_SMUDGE_TRANSPARENCY = MyPaintBrushSetting.MYPAINT_BRUSH_SETTING_SMUDGE_TRANSPARENCY;
+	alias MYPAINT_BRUSH_SETTING_OFFSET_Y = MyPaintBrushSetting.MYPAINT_BRUSH_SETTING_OFFSET_Y;
+	alias MYPAINT_BRUSH_SETTING_OFFSET_X = MyPaintBrushSetting.MYPAINT_BRUSH_SETTING_OFFSET_X;
+	alias MYPAINT_BRUSH_SETTING_OFFSET_ANGLE = MyPaintBrushSetting.MYPAINT_BRUSH_SETTING_OFFSET_ANGLE;
+	alias MYPAINT_BRUSH_SETTING_OFFSET_ANGLE_ASC = MyPaintBrushSetting.MYPAINT_BRUSH_SETTING_OFFSET_ANGLE_ASC;
+	alias MYPAINT_BRUSH_SETTING_OFFSET_ANGLE_VIEW = MyPaintBrushSetting.MYPAINT_BRUSH_SETTING_OFFSET_ANGLE_VIEW;
+	alias MYPAINT_BRUSH_SETTING_OFFSET_ANGLE_2 = MyPaintBrushSetting.MYPAINT_BRUSH_SETTING_OFFSET_ANGLE_2;
+	alias MYPAINT_BRUSH_SETTING_OFFSET_ANGLE_2_ASC = MyPaintBrushSetting.MYPAINT_BRUSH_SETTING_OFFSET_ANGLE_2_ASC;
+	alias MYPAINT_BRUSH_SETTING_OFFSET_ANGLE_2_VIEW = MyPaintBrushSetting.MYPAINT_BRUSH_SETTING_OFFSET_ANGLE_2_VIEW;
+	alias MYPAINT_BRUSH_SETTING_OFFSET_ANGLE_ADJ = MyPaintBrushSetting.MYPAINT_BRUSH_SETTING_OFFSET_ANGLE_ADJ;
+	alias MYPAINT_BRUSH_SETTING_OFFSET_MULTIPLIER = MyPaintBrushSetting.MYPAINT_BRUSH_SETTING_OFFSET_MULTIPLIER;
+	alias MYPAINT_BRUSH_SETTING_POSTERIZE = MyPaintBrushSetting.MYPAINT_BRUSH_SETTING_POSTERIZE;
+	alias MYPAINT_BRUSH_SETTING_POSTERIZE_NUM = MyPaintBrushSetting.MYPAINT_BRUSH_SETTING_POSTERIZE_NUM;
+	alias MYPAINT_BRUSH_SETTING_PAINT_MODE = MyPaintBrushSetting.MYPAINT_BRUSH_SETTING_PAINT_MODE;
 	alias MYPAINT_BRUSH_SETTINGS_COUNT = MyPaintBrushSetting.MYPAINT_BRUSH_SETTINGS_COUNT;
 	enum MyPaintBrushState
 	{
@@ -352,29 +364,27 @@ extern (C)
 	struct MyPaintBrush;
 	MyPaintBrush* mypaint_brush_new();
 	MyPaintBrush* mypaint_brush_new_with_buckets(int num_smudge_buckets);
-	void mypaint_brush_unref(const MyPaintBrush* self);
-	void mypaint_brush_ref(const MyPaintBrush* self);
-	void mypaint_brush_reset(const MyPaintBrush* self);
-	void mypaint_brush_new_stroke(const MyPaintBrush* self);
-	int mypaint_brush_stroke_to(const MyPaintBrush* self, MyPaintSurface* surface, float x, float y, float pressure, float xtilt, float ytilt, double dtime, float viewzoom, float viewrotation, float barrel_rotation, int linear);
-	void mypaint_brush_set_base_value(const MyPaintBrush* self, MyPaintBrushSetting id, float value);
-	float mypaint_brush_get_base_value(const MyPaintBrush* self, MyPaintBrushSetting id);
-	int mypaint_brush_is_constant(const MyPaintBrush* self, MyPaintBrushSetting id);
-	int mypaint_brush_get_inputs_used_n(const MyPaintBrush* self, MyPaintBrushSetting id);
-	void mypaint_brush_set_mapping_n(const MyPaintBrush* self, MyPaintBrushSetting id, MyPaintBrushInput input, int n);
-	int mypaint_brush_get_mapping_n(const MyPaintBrush* self, MyPaintBrushSetting id, MyPaintBrushInput input);
-	void mypaint_brush_set_mapping_point(const MyPaintBrush* self, MyPaintBrushSetting id, MyPaintBrushInput input, int index, float x, float y);
-	void mypaint_brush_get_mapping_point(const MyPaintBrush* self, MyPaintBrushSetting id, MyPaintBrushInput input, int index, float* x, float* y);
-	float mypaint_brush_get_state(const MyPaintBrush* self, MyPaintBrushState i);
-	void mypaint_brush_set_state(const MyPaintBrush* self, MyPaintBrushState i, float value);
-	int mypaint_brush_set_smudge_bucket_state(const MyPaintBrush* self, int bucket_index, float r, float g, float b, float a, float prev_r, float prev_g, float prev_b, float prev_a, float prev_color_recentness);
-	int mypaint_brush_get_smudge_bucket_state(const MyPaintBrush* self, int bucket_index, float* r, float* g, float* b, float* a, float* prev_r, float* prev_g, float* prev_b, float* prev_a, float* prev_color_recentness);
-	int mypaint_brush_get_min_smudge_bucket_used(const MyPaintBrush* self);
-	int mypaint_brush_get_max_smudge_bucket_used(const MyPaintBrush* self);
-	double mypaint_brush_get_total_stroke_painting_time(const MyPaintBrush* self);
-	void mypaint_brush_set_print_inputs(const MyPaintBrush* self, int enabled);
-	void mypaint_brush_from_defaults(const MyPaintBrush* self);
-	int mypaint_brush_from_string(const MyPaintBrush* self, const(char)* string);
+	void mypaint_brush_unref(MyPaintBrush* self);
+	void mypaint_brush_ref(MyPaintBrush* self);
+	void mypaint_brush_reset(MyPaintBrush* self);
+	void mypaint_brush_new_stroke(MyPaintBrush* self);
+	int mypaint_brush_stroke_to(MyPaintBrush* self, MyPaintSurface* surface, float x, float y, float pressure, float xtilt, float ytilt, double dtime);
+	int mypaint_brush_stroke_to_2(MyPaintBrush* self, MyPaintSurface2* surface, float x, float y, float pressure, float xtilt, float ytilt, double dtime, float viewzoom, float viewrotation, float barrel_rotation);
+	int mypaint_brush_stroke_to_2_linearsRGB(MyPaintBrush* self, MyPaintSurface2* surface, float x, float y, float pressure, float xtilt, float ytilt, double dtime, float viewzoom, float viewrotation, float barrel_rotation);
+	void mypaint_brush_set_base_value(MyPaintBrush* self, MyPaintBrushSetting id, float value);
+	float mypaint_brush_get_base_value(MyPaintBrush* self, MyPaintBrushSetting id);
+	int mypaint_brush_is_constant(MyPaintBrush* self, MyPaintBrushSetting id);
+	int mypaint_brush_get_inputs_used_n(MyPaintBrush* self, MyPaintBrushSetting id);
+	void mypaint_brush_set_mapping_n(MyPaintBrush* self, MyPaintBrushSetting id, MyPaintBrushInput input, int n);
+	int mypaint_brush_get_mapping_n(MyPaintBrush* self, MyPaintBrushSetting id, MyPaintBrushInput input);
+	void mypaint_brush_set_mapping_point(MyPaintBrush* self, MyPaintBrushSetting id, MyPaintBrushInput input, int index, float x, float y);
+	void mypaint_brush_get_mapping_point(MyPaintBrush* self, MyPaintBrushSetting id, MyPaintBrushInput input, int index, float* x, float* y);
+	float mypaint_brush_get_state(MyPaintBrush* self, MyPaintBrushState i);
+	void mypaint_brush_set_state(MyPaintBrush* self, MyPaintBrushState i, float value);
+	double mypaint_brush_get_total_stroke_painting_time(MyPaintBrush* self);
+	void mypaint_brush_set_print_inputs(MyPaintBrush* self, int enabled);
+	void mypaint_brush_from_defaults(MyPaintBrush* self);
+	int mypaint_brush_from_string(MyPaintBrush* self, const(char)* string);
 	alias __u_char = ubyte;
 	alias __u_short = ushort;
 	alias __u_int = uint;
@@ -473,12 +483,12 @@ extern (C)
 	{
 		float[3][3] rows = void;
 	}
-	MyPaintTransform mypaint_transform_unit();
-	MyPaintTransform mypaint_transform_rotate_cw(const MyPaintTransform transform, const(float) angle_radians);
-	MyPaintTransform mypaint_transform_rotate_ccw(const MyPaintTransform transform, const(float) angle_radians);
-	MyPaintTransform mypaint_transform_reflect(const MyPaintTransform transform, const(float) angle_radians);
-	MyPaintTransform mypaint_transform_translate(const MyPaintTransform transform, const(float) x, const(float) y);
-	void mypaint_transform_point(const MyPaintTransform* t, float x, float y, float* x_out, float* y_out);
+	const(MyPaintTransform) mypaint_transform_unit();
+	const(MyPaintTransform) mypaint_transform_rotate_cw(const MyPaintTransform transform, const(float) angle_radians);
+	const(MyPaintTransform) mypaint_transform_rotate_ccw(const MyPaintTransform transform, const(float) angle_radians);
+	const(MyPaintTransform) mypaint_transform_reflect(const MyPaintTransform transform, const(float) angle_radians);
+	const(MyPaintTransform) mypaint_transform_translate(const MyPaintTransform transform, const(float) x, const(float) y);
+	void mypaint_transform_point(const MyPaintTransform* transform, float x, float y, float* x_out, float* y_out);
 	enum MyPaintSymmetryType
 	{
 		MYPAINT_SYMMETRY_TYPE_VERTICAL,
@@ -515,7 +525,6 @@ extern (C)
 	MyPaintSymmetryData mypaint_default_symmetry_data();
 	void mypaint_symmetry_data_destroy(MyPaintSymmetryData*);
 	void mypaint_symmetry_set_pending(MyPaintSymmetryData* data, int active, float center_x, float center_y, float symmetry_angle, MyPaintSymmetryType symmetry_type, int rot_symmetry_lines);
-	// struct MyPaintTiledSurface;
 	struct MyPaintTileRequest
 	{
 		int tx = void;
@@ -529,29 +538,49 @@ extern (C)
 	void mypaint_tile_request_init(MyPaintTileRequest* data, int level, int tx, int ty, int readonly);
 	alias MyPaintTileRequestStartFunction = void function(MyPaintTiledSurface* self, MyPaintTileRequest* request);
 	alias MyPaintTileRequestEndFunction = void function(MyPaintTiledSurface* self, MyPaintTileRequest* request);
-	alias MyPaintTiledSurfaceAreaChanged = void function(MyPaintTiledSurface* self, int bb_x, int bb_y, int bb_w, int bb_h);
+	struct OperationQueue;
 	struct MyPaintTiledSurface
 	{
 		MyPaintSurface parent = void;
 		void function(MyPaintTiledSurface* self, MyPaintTileRequest* request) tile_request_start = void;
 		void function(MyPaintTiledSurface* self, MyPaintTileRequest* request) tile_request_end = void;
-		MyPaintSymmetryData symmetry_data = void;
-		void* operation_queue = void;
-		int num_bboxes = void;
-		int num_bboxes_dirtied = void;
-		MyPaintRectangle* bboxes = void;
-		MyPaintRectangle[32] default_bboxes = void;
+		int surface_do_symmetry = void;
+		float surface_center_x = void;
+		OperationQueue* operation_queue = void;
+		MyPaintRectangle dirty_bbox = void;
 		int threadsafe_tile_requests = void;
 		int tile_size = void;
 	}
 	void mypaint_tiled_surface_init(MyPaintTiledSurface* self, void function(MyPaintTiledSurface* self, MyPaintTileRequest* request) tile_request_start, void function(MyPaintTiledSurface* self, MyPaintTileRequest* request) tile_request_end);
 	void mypaint_tiled_surface_destroy(MyPaintTiledSurface* self);
-	void mypaint_tiled_surface_set_symmetry_state(MyPaintTiledSurface* self, int active, float center_x, float center_y, float symmetry_angle, MyPaintSymmetryType symmetry_type, int rot_symmetry_lines);
+	void mypaint_tiled_surface_set_symmetry_state(MyPaintTiledSurface* self, int active, float center_x);
 	float mypaint_tiled_surface_get_alpha(MyPaintTiledSurface* self, float x, float y, float radius);
 	void mypaint_tiled_surface_tile_request_start(MyPaintTiledSurface* self, MyPaintTileRequest* request);
 	void mypaint_tiled_surface_tile_request_end(MyPaintTiledSurface* self, MyPaintTileRequest* request);
 	void mypaint_tiled_surface_begin_atomic(MyPaintTiledSurface* self);
-	void mypaint_tiled_surface_end_atomic(MyPaintTiledSurface* self, MyPaintRectangles* roi);
+	void mypaint_tiled_surface_end_atomic(MyPaintTiledSurface* self, MyPaintRectangle* roi);
+	alias MyPaintTileRequestStartFunction2 = void function(MyPaintTiledSurface2* self, MyPaintTileRequest* request);
+	alias MyPaintTileRequestEndFunction2 = void function(MyPaintTiledSurface2* self, MyPaintTileRequest* request);
+	struct MyPaintTiledSurface2
+	{
+		MyPaintSurface2 parent = void;
+		void function(MyPaintTiledSurface2* self, MyPaintTileRequest* request) tile_request_start = void;
+		void function(MyPaintTiledSurface2* self, MyPaintTileRequest* request) tile_request_end = void;
+		OperationQueue* operation_queue = void;
+		int threadsafe_tile_requests = void;
+		int tile_size = void;
+		MyPaintSymmetryData symmetry_data = void;
+		int num_bboxes = void;
+		int num_bboxes_dirtied = void;
+		MyPaintRectangle* bboxes = void;
+	}
+	void mypaint_tiled_surface2_init(MyPaintTiledSurface2* self, void function(MyPaintTiledSurface2* self, MyPaintTileRequest* request) tile_request_start, void function(MyPaintTiledSurface2* self, MyPaintTileRequest* request) tile_request_end);
+	void mypaint_tiled_surface2_begin_atomic(MyPaintTiledSurface2* self);
+	void mypaint_tiled_surface2_end_atomic(MyPaintTiledSurface2* self, MyPaintRectangles* roi);
+	void mypaint_tiled_surface2_tile_request_start(MyPaintTiledSurface2* self, MyPaintTileRequest* request);
+	void mypaint_tiled_surface2_tile_request_end(MyPaintTiledSurface2* self, MyPaintTileRequest* request);
+	void mypaint_tiled_surface2_destroy(MyPaintTiledSurface2* self);
+	void mypaint_tiled_surface2_set_symmetry_state(MyPaintTiledSurface2* self, int active, float center_x, float center_y, float symmetry_angle, MyPaintSymmetryType symmetry_type, int rot_symmetry_lines);
 	struct MyPaintFixedTiledSurface;
 	MyPaintFixedTiledSurface* mypaint_fixed_tiled_surface_new(int width, int height);
 	int mypaint_fixed_tiled_surface_get_width(MyPaintFixedTiledSurface* self);
@@ -578,7 +607,7 @@ extern (C)
 	enum int __GNUC__ = 14;
 	enum int __GNUC_MINOR__ = 2;
 	enum int __GNUC_PATCHLEVEL__ = 1;
-	/+enum __VERSION__ = "14.2.1 20250128"+/;
+	/+enum __VERSION__ = "14.2.1 20250207"+/;
 	enum int __ATOMIC_RELAXED = 0;
 	enum int __ATOMIC_SEQ_CST = 5;
 	enum int __ATOMIC_ACQUIRE = 2;
@@ -1373,6 +1402,5 @@ extern (C)
 	{
 		return c;
 	}
-	enum int NUM_BBOXES_DEFAULT = 32;
 }
 import __importc_builtins;
