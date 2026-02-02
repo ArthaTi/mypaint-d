@@ -12,6 +12,7 @@
 		{
 			"name": "default",
 			"importPaths": ["import"],
+			"sourcePaths": ["import"],
 			"sourceFiles": ["import/mypaint.d"],
 			"libs": ["mypaint"]
 		},
