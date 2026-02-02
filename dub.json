@@ -22,7 +22,7 @@
 				"-P-Ilibmypaint",
 				"-Hf=import/mypaint.d"
 			],
-			"sourceFiles": ["source/mypaint.c"]
+			"sourceFiles": ["include/mypaint.c"]
 		}
 	]
 }
